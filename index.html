@@ -43,15 +43,19 @@
   .word{font-family:var(--font-display);font-size:15px;padding:5px 12px;border-radius:99px;background:var(--blush);color:var(--cherry);transform:rotate(var(--r,0deg))}
   .word.big{font-size:19px;background:var(--cherry);color:var(--paper)}
 
-  nav{position:sticky;top:0;z-index:5;background:linear-gradient(var(--cream) 80%,transparent);padding:16px 0 18px;margin-top:28px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  nav{position:sticky;top:0;z-index:5;background:var(--cream);padding:12px 0 10px;margin-top:28px;box-shadow:0 10px 12px -12px rgba(59,42,42,.25)}
+  .row{display:flex;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 2px 6px;margin:0 -20px;padding-left:20px;padding-right:20px;scroll-snap-type:x proximity}
+  .row::-webkit-scrollbar{display:none}
+  .row .chip{flex:none;scroll-snap-align:start;white-space:nowrap}
+  .sep{flex:none;width:2px;height:22px;background:rgba(59,42,42,.18);border-radius:2px;margin:0 4px}
+  .chips{display:contents}
   .chip{font-family:var(--font-display);font-size:15px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:6px 14px;border-radius:99px;cursor:pointer;transition:transform .12s}
   .chip:hover{transform:translateY(-1px)}
   .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
   .chip.color{border-color:transparent;width:34px;height:34px;padding:0;border-radius:50%;border:3px solid var(--paper);outline:2px solid transparent}
   .chip.color[aria-pressed="true"]{outline-color:var(--ink)}
   .chip:focus-visible{outline:3px solid var(--cherry);outline-offset:2px}
-  .count{font-size:14px;color:var(--ink-soft);margin:10px 0 0}
+  .count{font-size:13px;color:var(--ink-soft);margin:6px 0 0}
 
   .board{margin:26px 0 8px}
   .board h3{font-family:var(--font-display);font-weight:600;font-size:30px;margin:0;color:var(--cherry);transform:rotate(-1deg);display:inline-block}
@@ -70,7 +74,8 @@
 
   .empty{padding:40px 0;color:var(--ink-soft)}
   footer{padding:30px 0 60px;font-size:13px;color:var(--ink-soft)}
-  @media (max-width:760px){.profile{grid-template-columns:1fr}.grid{columns:2 140px;column-gap:12px}.pin{padding:7px 7px 9px}}
+  @media (max-width:760px){.profile{grid-template-columns:1fr;gap:22px}.grid{columns:2 140px;column-gap:12px}.pin{padding:7px 7px 9px}
+    .chip{font-size:14px;padding:5px 12px;border-width:1.5px}.chip.color{width:28px;height:28px}.card{padding:18px}.card h2{font-size:21px}.board h3{font-size:23px}}
   @media (prefers-reduced-motion:reduce){.pin,.chip{transition:none}.pin:hover{transform:rotate(var(--r,0deg))}}
 </style>
 </head>
@@ -95,8 +100,11 @@
   </section>
 
   <nav aria-label="Filters">
-    <div class="chips" id="boardchips"></div>
-    <div class="chips" id="colorchips" style="margin-top:10px"></div>
+    <div class="row" id="filters">
+      <div class="chips" id="boardchips"></div>
+      <span class="sep" aria-hidden="true"></span>
+      <div class="chips" id="colorchips"></div>
+    </div>
     <p class="count" id="count"></p>
   </nav>
 
@@ -146,7 +154,7 @@ function sync(container, key, val){ container.querySelectorAll(".chip").forEach(
 
 function draw(){
   const pins = DATA.pins.filter(p => (activeBoard==="all"||p.board===activeBoard) && (activeColor==="all"||p.family===activeColor));
-  document.getElementById("count").textContent = pins.length ? `${pins.length} pins` : "";
+  document.getElementById("count").textContent = pins.length ? `${pins.length} ${pins.length===1?"pin":"pins"}` : "";
   const main = document.getElementById("main");
   if(!pins.length){ main.innerHTML = '<p class="empty">Nothing matches those filters. Try another color.</p>'; return; }
   const byBoard = {};
