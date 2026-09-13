@@ -1,0 +1,21 @@
+{
+ "cherry": {
+  "status": 401,
+  "count": 0,
+  "sample": "{\"code\":3,\"message\":\"Your token does not have sufficient permissions to perform this operation. Please ensure your token is authorized with the correct set of scopes. Missing: ['boards:read_secret', 'pins:read_secret']\"}"
+ },
+ "logo": {
+  "status": 401,
+  "count": 0,
+  "sample": "{\"code\":3,\"message\":\"Your token does not have sufficient permissions to perform this operation. Please ensure your token is authorized with the correct set of scopes. Missing: ['boards:read_secret', 'pins:read_secret']\"}"
+ },
+ "wedding invitation": {
+  "status": 401,
+  "count": 0,
+  "sample": "{\"code\":3,\"message\":\"Your token does not have sufficient permissions to perform this operation. Please ensure your token is authorized with the correct set of scopes. Missing: ['boards:read_secret', 'pins:read_secret']\"}"
+ },
+ "partner": {
+  "status": 401,
+  "resp": "{\"code\":3,\"message\":\"Your application does not have access to this restricted feature: pin_search\"}"
+ }
+}
