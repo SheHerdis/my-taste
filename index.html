@@ -75,7 +75,18 @@
   .empty{padding:40px 0;color:var(--ink-soft)}
   footer{padding:30px 0 60px;font-size:13px;color:var(--ink-soft)}
   @media (max-width:760px){.profile{grid-template-columns:1fr;gap:22px}.grid{columns:2 140px;column-gap:12px}.pin{padding:7px 7px 9px}
-    .chip{font-size:14px;padding:5px 12px;border-width:1.5px}.chip.color{width:28px;height:28px}.card{padding:18px}.card h2{font-size:21px}.board h3{font-size:23px}}
+    .chip{font-size:14px;padding:5px 12px;border-width:1.5px}.chip.color{width:28px;height:28px}.card{padding:18px}.card h2{font-size:21px}.board h3{font-size:23px}
+    .pin{transform:none;padding:0;background:transparent;box-shadow:none;border-radius:10px;overflow:hidden}.pin::before{display:none}.pin img{border-radius:10px}.pin .meta{display:none}}
+  .lb{position:fixed;inset:0;z-index:50;background:rgba(59,42,42,.96);display:none;flex-direction:column;align-items:center;justify-content:center;padding:14px}
+  .lb.open{display:flex}
+  .lb img{max-width:100%;max-height:78vh;border-radius:10px;object-fit:contain;background:var(--paper)}
+  .lb .cap{color:var(--cream);font-size:14px;margin:12px 0 0;max-width:60ch;text-align:center;opacity:.9}
+  .lb .bar{display:flex;gap:10px;margin-top:14px}
+  .lb button,.lb a.btn{font-family:var(--font-display);font-size:15px;border:0;border-radius:99px;padding:9px 16px;background:var(--paper);color:var(--ink);cursor:pointer;text-decoration:none}
+  .lb .x{position:absolute;top:14px;right:14px;width:42px;height:42px;padding:0;font-size:22px;line-height:42px;text-align:center}
+  .lb .nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;padding:0;font-size:22px;opacity:.9}
+  .lb .prev{left:10px}.lb .next{right:10px}
+  body.noscroll{overflow:hidden}
   @media (prefers-reduced-motion:reduce){.pin,.chip{transition:none}.pin:hover{transform:rotate(var(--r,0deg))}}
 </style>
 </head>
@@ -111,6 +122,14 @@
   <main id="main"></main>
 
   <footer id="foot"></footer>
+</div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Pin viewer">
+  <button class="x" id="lbx" aria-label="Close">×</button>
+  <button class="nav prev" id="lbp" aria-label="Previous">‹</button>
+  <img id="lbimg" alt="">
+  <button class="nav next" id="lbn" aria-label="Next">›</button>
+  <p class="cap" id="lbcap"></p>
+  <div class="bar"><a class="btn" id="lbopen" target="_blank" rel="noopener">open on Pinterest</a></div>
 </div>
 
 <script>
@@ -170,10 +189,31 @@ function card(p, i){
   const r = ((hash(p.id)%5)-2)*0.9, t = ((hash(p.id+"t")%5)-2)*3;
   const sw = (p.colors||[]).slice(0,3).map(c=>`<i style="background:${c}"></i>`).join("");
   const label = p.title || p.board;
-  return `<a class="pin" href="${p.pin_url}" target="_blank" rel="noopener" style="--r:${r}deg;--t:${t}deg">
+  return `<a class="pin" href="${p.pin_url}" data-id="${p.id}" style="--r:${r}deg;--t:${t}deg">
     <img src="${p.image}" alt="${esc(label)}" loading="lazy" onerror="this.onerror=null;this.src='${p.remote||''}'">
     <div class="meta"><span class="sw">${sw}</span><span>${esc(label)}</span></div></a>`;
 }
+
+let VIEW=[], idx=0;
+const lb=document.getElementById("lb"), lbimg=document.getElementById("lbimg"), lbcap=document.getElementById("lbcap"), lbopen=document.getElementById("lbopen");
+document.getElementById("main").addEventListener("click", e => {
+  const a = e.target.closest(".pin"); if(!a) return; e.preventDefault();
+  VIEW = [...document.querySelectorAll("#main .pin")].map(el => el.dataset.id);
+  idx = VIEW.indexOf(a.dataset.id); show();
+});
+function show(){
+  const p = DATA.pins.find(x => x.id === VIEW[idx]); if(!p) return;
+  lbimg.src = p.image; lbimg.alt = p.title || p.board; lbimg.onerror = () => { lbimg.onerror=null; lbimg.src = p.remote || ""; };
+  lbcap.textContent = [p.title, p.board].filter(Boolean).join(" — "); lbopen.href = p.pin_url;
+  lb.classList.add("open"); document.body.classList.add("noscroll");
+}
+function step(d){ idx = (idx + d + VIEW.length) % VIEW.length; show(); }
+function closeLb(){ lb.classList.remove("open"); document.body.classList.remove("noscroll"); }
+document.getElementById("lbx").onclick = closeLb; document.getElementById("lbp").onclick = () => step(-1); document.getElementById("lbn").onclick = () => step(1);
+lb.addEventListener("click", e => { if(e.target === lb) closeLb(); });
+document.addEventListener("keydown", e => { if(!lb.classList.contains("open")) return; if(e.key==="Escape") closeLb(); if(e.key==="ArrowRight") step(1); if(e.key==="ArrowLeft") step(-1); });
+let tx=null; lb.addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive:true});
+lb.addEventListener("touchend", e => { if(tx===null) return; const dx = e.changedTouches[0].clientX - tx; if(Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx=null; });
 
 function hash(s){ let h=7; for(const c of String(s)) h=(h*31+c.charCodeAt(0))>>>0; return h; }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
