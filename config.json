@@ -1,0 +1,7 @@
+{
+  "site_title": "my taste",
+  "owner": "Nourah",
+  "exclude_boards": ["ads", "t-shirts", "HerEra Sandbox Test", "Claude"],
+  "exclude_pins": [],
+  "image_width": 640
+}

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>my taste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5EAD9; --paper:#FBF5EA; --cherry:#B3453A; --blush:#F3D5D0;
+    --sky:#C9D6E8; --ink:#3B2A2A; --ink-soft:#7A6664; --tape:rgba(243,213,208,.75);
+    --font-display:"Fredoka",system-ui,sans-serif; --font-body:"Nunito",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;
+    background-image:radial-gradient(rgba(59,42,42,.06) .7px,transparent .8px);background-size:22px 22px}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  header{padding:56px 0 24px}
+  .title{font-family:var(--font-display);font-weight:600;font-size:clamp(56px,11vw,132px);line-height:.9;letter-spacing:-.02em;color:var(--cherry);margin:0;transform:rotate(-2deg);display:inline-block}
+  .title .cherries{display:inline-block;width:.55em;height:.55em;vertical-align:-.05em;margin-left:.12em}
+  .sub{margin:18px 0 0;max-width:52ch;color:var(--ink-soft)}
+  .sub b{color:var(--ink);font-weight:600}
+
+  .strip{margin:30px 0 8px;display:flex;flex-wrap:wrap;gap:0;transform:rotate(1deg);box-shadow:0 8px 0 -3px var(--tape)}
+  .strip i{flex:1 1 40px;height:44px;min-width:28px}
+  .strip i:first-child{border-radius:6px 0 0 6px}.strip i:last-child{border-radius:0 6px 6px 0}
+  .stripnote{font-size:13px;color:var(--ink-soft);margin:14px 0 0}
+
+  .profile{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;margin:40px 0 10px}
+  .card{background:var(--paper);border-radius:14px;padding:22px 24px;position:relative;box-shadow:0 1px 0 rgba(59,42,42,.08),0 10px 24px -18px rgba(59,42,42,.35)}
+  .card::before{content:"";position:absolute;top:-10px;left:26px;width:74px;height:22px;background:var(--tape);transform:rotate(-3deg);border-radius:2px}
+  .card h2{font-family:var(--font-display);font-weight:600;font-size:24px;margin:0 0 10px}
+  .fams{display:flex;flex-direction:column;gap:9px}
+  .fam{display:grid;grid-template-columns:64px 1fr 40px;align-items:center;gap:12px;font-size:14px}
+  .fam .bar{height:12px;border-radius:99px;background:rgba(59,42,42,.08);overflow:hidden}
+  .fam .bar i{display:block;height:100%;border-radius:99px}
+  .fam .n{text-align:right;color:var(--ink-soft)}
+  .words{display:flex;flex-wrap:wrap;gap:8px}
+  .word{font-family:var(--font-display);font-size:15px;padding:5px 12px;border-radius:99px;background:var(--blush);color:var(--cherry);transform:rotate(var(--r,0deg))}
+  .word.big{font-size:19px;background:var(--cherry);color:var(--paper)}
+
+  nav{position:sticky;top:0;z-index:5;background:linear-gradient(var(--cream) 80%,transparent);padding:16px 0 18px;margin-top:28px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--font-display);font-size:15px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:6px 14px;border-radius:99px;cursor:pointer;transition:transform .12s}
+  .chip:hover{transform:translateY(-1px)}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+  .chip.color{border-color:transparent;width:34px;height:34px;padding:0;border-radius:50%;border:3px solid var(--paper);outline:2px solid transparent}
+  .chip.color[aria-pressed="true"]{outline-color:var(--ink)}
+  .chip:focus-visible{outline:3px solid var(--cherry);outline-offset:2px}
+  .count{font-size:14px;color:var(--ink-soft);margin:10px 0 0}
+
+  .board{margin:26px 0 8px}
+  .board h3{font-family:var(--font-display);font-weight:600;font-size:30px;margin:0;color:var(--cherry);transform:rotate(-1deg);display:inline-block}
+  .board h3 small{font-family:var(--font-body);font-size:14px;color:var(--ink-soft);margin-left:10px;font-weight:400}
+  .grid{columns:5 200px;column-gap:18px;margin:8px 0 34px}
+  .pin{break-inside:avoid;display:block;background:var(--paper);padding:10px 10px 12px;margin:0 0 18px;border-radius:6px;position:relative;text-decoration:none;
+    box-shadow:0 1px 0 rgba(59,42,42,.1),0 12px 20px -16px rgba(59,42,42,.5);transform:rotate(var(--r,0deg));transition:transform .15s}
+  .pin:hover{transform:rotate(0deg) scale(1.03);z-index:2}
+  .pin::before{content:"";position:absolute;top:-9px;left:50%;width:66px;height:20px;margin-left:-33px;background:var(--tape);transform:rotate(var(--t,-2deg));border-radius:2px;opacity:.95}
+  .pin img{width:100%;display:block;border-radius:3px;background:var(--blush)}
+  .pin .meta{display:flex;align-items:center;gap:6px;margin:8px 2px 0;font-size:12.5px;color:var(--ink-soft);line-height:1.3}
+  .pin .meta .sw{display:inline-flex;gap:3px;flex:none}
+  .pin .meta .sw i{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(59,42,42,.12)}
+  .pin .meta span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pin:focus-visible{outline:3px solid var(--cherry);outline-offset:3px}
+
+  .empty{padding:40px 0;color:var(--ink-soft)}
+  footer{padding:30px 0 60px;font-size:13px;color:var(--ink-soft)}
+  @media (max-width:760px){.profile{grid-template-columns:1fr}.grid{columns:2 140px;column-gap:12px}.pin{padding:7px 7px 9px}}
+  @media (prefers-reduced-motion:reduce){.pin,.chip{transition:none}.pin:hover{transform:rotate(var(--r,0deg))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="title" id="title">my taste<svg class="cherries" viewBox="0 0 40 40" aria-hidden="true"><path d="M14 8c4 3 9 4 14 3" fill="none" stroke="#5E8C4C" stroke-width="2.6" stroke-linecap="round"/><path d="M14 8c-2 6-1 12 1 17M28 11c2 5 2 10 0 15" fill="none" stroke="#5E8C4C" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="29" r="8" fill="#B3453A"/><circle cx="29" cy="30" r="8" fill="#B3453A"/><circle cx="10.5" cy="26.5" r="2" fill="#F3D5D0" opacity=".8"/><circle cx="26.5" cy="27.5" r="2" fill="#F3D5D0" opacity=".8"/></svg></h1>
+    <p class="sub" id="sub">Everything here is pulled from my Pinterest boards. If it's on this page, I saved it because I liked it.</p>
+    <div class="strip" id="strip" aria-label="Colors that keep showing up in what I save"></div>
+    <p class="stripnote" id="stripnote"></p>
+  </header>
+
+  <section class="profile" aria-label="Taste profile">
+    <div class="card">
+      <h2>What the colors say</h2>
+      <div class="fams" id="fams"></div>
+    </div>
+    <div class="card">
+      <h2>Words I keep saving</h2>
+      <div class="words" id="words"></div>
+    </div>
+  </section>
+
+  <nav aria-label="Filters">
+    <div class="chips" id="boardchips"></div>
+    <div class="chips" id="colorchips" style="margin-top:10px"></div>
+    <p class="count" id="count"></p>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const FAMILY = {pink:"#E8A2A0", cream:"#E9CDA8", yellow:"#EAD98B", green:"#B7D3B0", blue:"#C9D6E8", purple:"#CDBFDD", neutral:"#D9CFC4"};
+const FAMILY_LABEL = {pink:"pinks", cream:"creams", yellow:"yellows", green:"greens", blue:"blues", purple:"purples", neutral:"neutrals"};
+let DATA, activeBoard = "all", activeColor = "all";
+
+fetch("data/pins.json").then(r => r.json()).then(d => { DATA = d; render(); })
+  .catch(() => { document.getElementById("main").innerHTML = '<p class="empty">No pins yet. Run the sync action once and refresh.</p>'; });
+
+function render(){
+  const {profile, boards, pins, title, owner, username} = DATA;
+  if (title) document.getElementById("title").firstChild.nodeValue = title;
+  const strip = document.getElementById("strip");
+  strip.innerHTML = profile.palette.map(c => `<i style="background:${c}" title="${c}"></i>`).join("");
+  document.getElementById("stripnote").textContent = `${profile.palette.length} colors that show up most across ${profile.total} pins.`;
+
+  const total = Object.values(profile.families).reduce((a,b)=>a+b,0) || 1;
+  document.getElementById("fams").innerHTML = Object.entries(profile.families).map(([f,n]) =>
+    `<div class="fam"><span>${FAMILY_LABEL[f]||f}</span><div class="bar"><i style="width:${Math.round(n/total*100)}%;background:${FAMILY[f]||'#ccc'}"></i></div><span class="n">${Math.round(n/total*100)}%</span></div>`).join("");
+
+  document.getElementById("words").innerHTML = profile.keywords.slice(0,18).map((w,i) =>
+    `<span class="word ${i<3?'big':''}" style="--r:${((i*37)%7-3)}deg">${w}</span>`).join("");
+
+  const bc = document.getElementById("boardchips");
+  bc.innerHTML = [`<button class="chip" data-b="all" aria-pressed="true">everything</button>`]
+    .concat(boards.filter(b=>b.count).map(b => `<button class="chip" data-b="${esc(b.name)}" aria-pressed="false">${esc(b.name)}</button>`)).join("");
+  bc.addEventListener("click", e => { const b = e.target.closest(".chip"); if(!b) return; activeBoard = b.dataset.b; sync(bc, "b", activeBoard); draw(); });
+
+  const cc = document.getElementById("colorchips");
+  const fams = Object.keys(profile.families);
+  cc.innerHTML = [`<button class="chip" data-c="all" aria-pressed="true">any color</button>`]
+    .concat(fams.map(f => `<button class="chip color" data-c="${f}" aria-pressed="false" aria-label="${FAMILY_LABEL[f]||f}" style="background:${FAMILY[f]}"></button>`)).join("");
+  cc.addEventListener("click", e => { const b = e.target.closest(".chip"); if(!b) return; activeColor = b.dataset.c; sync(cc, "c", activeColor); draw(); });
+
+  document.getElementById("foot").textContent = `${owner||username} · synced from @${username} · updates itself every day`;
+  draw();
+}
+
+function sync(container, key, val){ container.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset[key]===val))); }
+
+function draw(){
+  const pins = DATA.pins.filter(p => (activeBoard==="all"||p.board===activeBoard) && (activeColor==="all"||p.family===activeColor));
+  document.getElementById("count").textContent = pins.length ? `${pins.length} pins` : "";
+  const main = document.getElementById("main");
+  if(!pins.length){ main.innerHTML = '<p class="empty">Nothing matches those filters. Try another color.</p>'; return; }
+  const byBoard = {};
+  pins.forEach(p => (byBoard[p.board] ||= []).push(p));
+  main.innerHTML = Object.entries(byBoard).map(([name, list]) => `
+    <section class="board">
+      <h3>${esc(name)}<small>${list.length}</small></h3>
+      <div class="grid">${list.map(card).join("")}</div>
+    </section>`).join("");
+}
+
+function card(p, i){
+  const r = ((hash(p.id)%5)-2)*0.9, t = ((hash(p.id+"t")%5)-2)*3;
+  const sw = (p.colors||[]).slice(0,3).map(c=>`<i style="background:${c}"></i>`).join("");
+  const label = p.title || p.board;
+  return `<a class="pin" href="${p.pin_url}" target="_blank" rel="noopener" style="--r:${r}deg;--t:${t}deg">
+    <img src="${p.image}" alt="${esc(label)}" loading="lazy" onerror="this.onerror=null;this.src='${p.remote||''}'">
+    <div class="meta"><span class="sw">${sw}</span><span>${esc(label)}</span></div></a>`;
+}
+
+function hash(s){ let h=7; for(const c of String(s)) h=(h*31+c.charCodeAt(0))>>>0; return h; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+</script>
+</body>
+</html>
